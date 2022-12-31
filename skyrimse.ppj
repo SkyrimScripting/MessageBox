@@ -1,0 +1,33 @@
+<?xml version='1.0'?>
+<PapyrusProject xmlns="PapyrusProject.xsd" Flags="TESV_Papyrus_Flags.flg" Game="sse" Output="Scripts">
+    <!--
+        These variables contain hard-coded paths because the VS Code Papyrus extension does not support environment variables: https://github.com/joelday/papyrus-lang/issues/145
+        Please change the values of these variables to point to folders on your PC.
+        Notes:
+        - To create the contents of the "Imports" folder yourself, download the listed mods from Nexus or elsewhere and extract them to a folder.
+        - In a few cases (notably UIExtensions) the authors put .psc files into .bsa, so be sure to also extract .bsa for these mods.
+        - The "SKSE" mod contains the contents of the Data\ folder of SKSE as downloaded from https://skse.silverlock.org/
+        To provide better portability, I *always* use "C:\Modding\PapyrusImports" and "C:\Modding\SkyrimScripting" in my .ppj files
+        Tip:
+        - If you want, you can make these symlinks to other folders on your PC.
+        - This is what I do! These paths actually link to folders in my Dropbox directory.
+        - To create a symlink, open PowerShell as administrator and run something like the following:
+          New-Item -ItemType SymbolicLink -Path "C:\Modding\PapyrusImports" -Target "C:\Users\mrowr\Dropbox\Skyrim\PapyrusImports"
+    -->
+    <Variables>
+        <Variable Name="ModName" Value="SkyrimScripting.MessageBox" />
+        <Variable Name="Mods" Value="C:\Modding\Mods" />
+    </Variables>
+    <Imports>
+        <Import>./Scripts/Source</Import>
+        <Import>C:\Program Files (x86)\Steam\steamapps\common\Skyrim Special Edition\Data\Scripts\Source</Import>
+    </Imports>
+    <Folders>
+        <Folder>./Scripts/Source</Folder>
+    </Folders>
+    <PostBuildEvent Description="Deploy scripts to Mods folder" UseInBuild="true">
+        <Command>(if exist "@Mods\@ModName" rmdir /s /q "@Mods\@ModName")</Command>
+        <Command>mkdir "@Mods\@ModName\Scripts"</Command>
+        <Command>xcopy /e .\Scripts "@Mods\@ModName\Scripts"</Command>
+    </PostBuildEvent>
+</PapyrusProject>

@@ -2,7 +2,19 @@
 
 #include "CustomMessageBox.h"
 
-PluginLogDisable;
+uint32_t MessageBox_Show(RE::StaticFunctionTag*, std::string bodyText) {
+    auto buttons = std::vector<std::string>{"Hello", "Buttons"};
+    auto future = CustomMessageBox::ShowAsync(bodyText, buttons);
+    return 123;
+    // return future.get();
+}
+
+bool RegisterPapyrusFunctions(RE::BSScript::IVirtualMachine* vm) {
+    vm->RegisterFunction("Show", "SkyMessage", MessageBox_Show);
+    return true;
+}
+
+OnInit { SKSE::GetPapyrusInterface()->Register(RegisterPapyrusFunctions); }
 
 EventHandlers {
     On<RE::TESActivateEvent>([](const RE::TESActivateEvent* event) {
