@@ -1,12 +1,20 @@
 #include <SkyrimScripting/Plugin.h>
 
-OnInit { logger::info("Hello log from SKSE Starter Kit!"); }
-OnDataLoaded { ConsoleLog("Hello console from SKSE Starter Kit!"); }
+#include "CustomMessageBox.h"
+
+PluginLogDisable;
 
 EventHandlers {
     On<RE::TESActivateEvent>([](const RE::TESActivateEvent* event) {
-        auto activated = event->objectActivated->GetBaseObject()->GetName();
-        auto activator = event->actionRef->GetBaseObject()->GetName();
-        ConsoleLog("{} activated {}", activator, activated);
+        if (event->actionRef->GetFormID() == 0x14) {
+            auto activatedName = std::string{event->objectActivated->GetBaseObject()->GetName()};
+            if (!activatedName.empty()) {
+                auto message = std::format("You activated {}.\nHow do you feel about that?", activatedName);
+                auto buttons = std::vector<std::string>{"Pretty good", "Not bad", "Ok"};
+                CustomMessageBox::Show(message, buttons, [](uint32_t result) {
+                    RE::DebugNotification(std::format("You selected {}", result).c_str());
+                });
+            }
+        }
     });
 }
