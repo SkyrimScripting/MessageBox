@@ -17,8 +17,10 @@
     <Variables>
         <Variable Name="ModName" Value="SkyrimScripting.MessageBox" />
         <Variable Name="Mods" Value="C:\Modding\Mods" />
+        <Variable Name="Imports" Value="C:\Modding\PapyrusImports" />
     </Variables>
     <Imports>
+        <Import>@Imports/SKSE/Scripts/Source</Import>
         <Import>./Scripts/Source</Import>
         <Import>C:\Program Files (x86)\Steam\steamapps\common\Skyrim Special Edition\Data\Scripts\Source</Import>
     </Imports>
@@ -26,7 +28,7 @@
         <Folder>./Scripts/Source</Folder>
     </Folders>
     <PostBuildEvent Description="Deploy scripts to Mods folder" UseInBuild="true">
-        <Command>(if exist "@Mods\@ModName" rmdir /s /q "@Mods\@ModName")</Command>
+        <Command>(if exist "@Mods\@ModName" rmdir /s /q "@Mods\@ModName\Scripts")</Command>
         <Command>mkdir "@Mods\@ModName\Scripts"</Command>
         <Command>xcopy /e .\Scripts "@Mods\@ModName\Scripts"</Command>
     </PostBuildEvent>

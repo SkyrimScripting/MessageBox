@@ -2,46 +2,41 @@
 
 #include <functional>
 #include <future>
-#include <span>
+#include <vector>
 
 namespace SkyrimScripting {
 
     class SkyrimMessageBox {
         class MessageBoxResultCallback : public RE::IMessageBoxCallback {
-            std::function<void(uint32_t)> _callback;
+            std::function<void(unsigned int)> _callback;
 
         public:
             ~MessageBoxResultCallback() override {}
-            MessageBoxResultCallback(std::function<void(uint32_t)> callback) : _callback(callback) {}
-            void Run(RE::IMessageBoxCallback::Message message) override { _callback(static_cast<uint32_t>(message)); }
+            MessageBoxResultCallback(std::function<void(unsigned int)> callback) : _callback(callback) {}
+            void Run(RE::IMessageBoxCallback::Message message) override {
+                _callback(static_cast<unsigned int>(message));
+            }
         };
 
     public:
-        static void Show(const std::string& bodyText, std::span<std::string> buttonTextValues,
-                         std::function<void(uint32_t)> callback) {
+        static void Show(const std::string& bodyText, std::vector<std::string> buttonTextValues,
+                         std::function<void(unsigned int)> callback) {
             auto* factoryManager = RE::MessageDataFactoryManager::GetSingleton();
             auto* uiStringHolder = RE::InterfaceStrings::GetSingleton();
-            auto* factory = factoryManager->GetCreator<RE::MessageBoxData>(uiStringHolder->messageBoxData);
+            auto* factory = factoryManager->GetCreator<RE::MessageBoxData>(
+                uiStringHolder->messageBoxData);  // "MessageBoxData" <--- can we just use this string?
             auto* messagebox = factory->Create();
             RE::BSTSmartPointer<RE::IMessageBoxCallback> messageCallback =
                 RE::make_smart<MessageBoxResultCallback>(callback);
-
             messagebox->callback = messageCallback;
             messagebox->bodyText = bodyText;
             for (auto text : buttonTextValues) messagebox->buttonText.push_back(text.c_str());
             messagebox->QueueMessage();
         }
-
-        static std::future<uint32_t> ShowAsync(const std::string& bodyText, std::span<std::string> buttonTextValues) {
-            auto promisePtr = std::make_shared<std::promise<uint32_t>>();
-            std::future<uint32_t> future = promisePtr->get_future();
-            Show(bodyText, buttonTextValues, [promisePtr](uint32_t result) { promisePtr->set_value(result); });
-            return future;
-        }
     };
 
-    void ShowMessageBox(const std::string& bodyText, std::span<std::string> buttonTextValues,
-                        std::function<void(uint32_t)> callback) {
+    void ShowMessageBox(const std::string& bodyText, std::vector<std::string> buttonTextValues,
+                        std::function<void(unsigned int)> callback) {
         SkyrimMessageBox::Show(bodyText, buttonTextValues, callback);
     }
 }
