@@ -1,4 +1,13 @@
 scriptName MessageBoxDemo extends Actor
+{!BIND}
+
+event OnInit()
+    string result = SkyMessage.Show("MessageBox created by Papyrus!", "One", "Two", "Five", "Three sir!", "Three")
+    Debug.MessageBox("Result button: " + result)
+
+    string index = SkyMessage.Show("MessageBox created by Papyrus!", "One", "Two", "Five", "Three sir!", "Three", getIndex = true)
+    Debug.MessageBox("Result button index: " + index)
+endEvent
 
 event OnItemAdded(Form baseForm, int count, ObjectReference obj, ObjectReference source)
     GoToState("AskingPlayerIfTheyWantMore")

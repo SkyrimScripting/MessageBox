@@ -65,9 +65,8 @@ namespace SkyrimScripting::MessageBox::Plugin {
             return resultString;
         }
 
-        unsigned int GetResultIndex(RE::StaticFunctionTag*, unsigned int messageBoxId,
-                                    bool deleteResultOnAccess = true) {
-            unsigned int index = 0;
+        int GetResultIndex(RE::StaticFunctionTag*, unsigned int messageBoxId, bool deleteResultOnAccess = true) {
+            auto index = -1;
             if (_messageBoxResults.contains(messageBoxId)) {
                 index = _messageBoxResults.at(messageBoxId);
                 if (deleteResultOnAccess) Delete(nullptr, messageBoxId);
