@@ -17,5 +17,5 @@ string buttonName = SkyMessage.Show("message text", "Ok", "Cancel")
 ```
 
 ```psc
-int buttonIndex = SkyMessage.Show("message text", buttonNamesArray, getIndex = true)
+int buttonIndex = SkyMessage.Show("message text", buttonNamesArray, getIndex = true) as int
 ```
